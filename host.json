@@ -7,5 +7,24 @@
                 "isEnabled": true
             }
         }
+    },
+
+    "extensions": {
+        "http": {
+            "routePrefix": "",
+            "maxOutstandingRequests": 200,
+            "maxConcurrentRequests": 100,
+            "dynamicThrottlesEnabled": true,
+            "hsts": {
+                "isEnabled": true,
+                "maxAge": "10"
+            },
+            "customHeaders": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET,POST,PATCH,DELETE,PUT,OPTIONS",
+                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token, content-type"
+            }
+        }
     }
+
 }

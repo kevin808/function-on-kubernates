@@ -25,9 +25,20 @@ namespace Dotnet
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             name = name ?? data?.name;
 
+
+            var response = new OkObjectResult($"Hello, {name}");
+            // response.Headers.Add("Access-Control-Allow-Origin", "*");
+            // response.Headers.Add("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE,PUT,OPTIONS");
+            // response.Headers.Add("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token, content-type");
             return name != null
-                ? (ActionResult)new OkObjectResult($"Hello, {name}")
+                ? (ActionResult)response
                 : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
+
+            // response.Headers.Add("Access-Control-Allow-Origin", "*");
+            // response.Headers.Add("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE,PUT,OPTIONS");
+            // response.Headers.Add("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token, content-type");
+
+            // return name
         }
     }
 }
