@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "functiononkubernate-fcbf"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "functiononkubernate-fcbf"
+  template:
+    metadata:
+      labels:
+        app: "functiononkubernate-fcbf"
+    spec:
+      containers:
+        - name: "functiononkubernate-fcbf"
+          image: "fokacr.azurecr.io/functiononkubernate"
+          ports:
+          - containerPort: 80
