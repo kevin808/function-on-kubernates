@@ -1,0 +1,51 @@
+on: [push]
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    
+    - uses: azure/docker-login@v1
+      with:
+        login-server: fokacr.azurecr.io
+        username: ${{ secrets.acr_fokacr_username }}
+        password: ${{ secrets.acr_fokacr_password }}
+    
+    - name: Build and push image to ACR
+      id: build-image
+      run: |
+        docker build "$GITHUB_WORKSPACE/" -f  "Dockerfile" -t fokacr.azurecr.io/functiononkubernate:${{ github.sha }}
+        docker push fokacr.azurecr.io/functiononkubernate:${{ github.sha }}
+    
+    - uses: azure/k8s-set-context@v1
+      with:
+         kubeconfig: ${{ secrets.aks_functiononkubernate_kubeConfig }}
+      id: login
+    
+    - name: Create namespace
+      run: |
+        namespacePresent=`kubectl get namespace | grep function-on-kubernate8bf6 | wc -l`
+        if [ $namespacePresent -eq 0 ]
+        then
+            echo `kubectl create namespace function-on-kubernate8bf6`
+        fi
+
+    - uses: azure/k8s-create-secret@v1
+      with:
+        namespace: function-on-kubernate8bf6
+        container-registry-url: fokacr.azurecr.io
+        container-registry-username: ${{ secrets.acr_fokacr_username }}
+        container-registry-password: ${{ secrets.acr_fokacr_password }}
+        secret-name: functiononkudockerauth
+       
+    - uses: azure/k8s-deploy@v1.2
+      with:
+        namespace: function-on-kubernate8bf6
+        manifests: |
+          manifests/deployment-2.yml
+          manifests/service-2.yml
+          manifests/ingress-2.yml
+        images: |
+          fokacr.azurecr.io/functiononkubernate:${{ github.sha }}
+        imagepullsecrets: |
+          functiononkudockerauth
