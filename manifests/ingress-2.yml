@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+    name: "functiononkubernate-f2a2"
+    labels:
+        app: "functiononkubernate-f2a2"
+    annotations:
+        kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+    rules:
+        - host: function-on-kubernate8bf6-functiononkubernate-f2a2.437396507e7949f6939c.southeastasia.aksapp.io
+          http:
+            paths:
+            - path: /
+              backend:
+                serviceName: "functiononkubernate-f2a2"
+                servicePort: 80
